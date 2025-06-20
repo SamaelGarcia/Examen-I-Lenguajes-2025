@@ -1,70 +1,67 @@
-import { useState } from "react";
+import { useFormik, FormikProvider } from "formik";
+import { useNavigate } from "react-router-dom";
 import { useRoles } from "../../hooks/useRoles";
 import { Title } from "../../components/shared/Title";
-import { Link } from "react-router-dom";
-import { Edit, Trash } from "lucide-react";
+import {
+  roleInitialValues,
+  roleValidationSchema,
+} from "../../infrastructure/validations/role.validation";
 
-export const RolesPage = () => {
-  const [searchField, setSearchField] = useState("");
+export const CreateRolePage = () => {
+  const { createRoleMutation } = useRoles();
+  const navigate = useNavigate();
 
-  const {
-    rolesPaginationQuery,
-    deleteRoleMutation
-  } = useRoles();
-
-  const { data, isLoading } = rolesPaginationQuery(searchField, 1, 10);
-
-  const handleDelete = (id: string) => {
-    deleteRoleMutation.mutate(id);
-  };
+  const formik = useFormik({
+    initialValues: roleInitialValues,
+    validationSchema: roleValidationSchema,
+    onSubmit: (values) => {
+      createRoleMutation.mutate(values, {
+        onSuccess: () => navigate("/roles"),
+      });
+    },
+  });
 
   return (
-    <div className="p-4">
-      <Title text="Gestión de Roles" />
-      <div className="flex justify-between mb-4">
-        <input
-          type="text"
-          placeholder="Buscar..."
-          value={searchField}
-          onChange={(e) => setSearchField(e.target.value)}
-          className="border px-2 py-1 rounded"
-        />
-        <Link to="/roles/create" className="bg-blue-500 text-white px-4 py-2 rounded">
-          Crear Rol
-        </Link>
-      </div>
-
-      {isLoading ? (
-        <p>Cargando roles...</p>
-      ) : data?.result.items.length === 0 ? (
-        <p>No hay roles registrados.</p>
-      ) : (
-        <table className="w-full border text-left">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-2">Nombre</th>
-              <th className="p-2">Descripción</th>
-              <th className="p-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.result.items.map((role) => (
-              <tr key={role.id} className="border-t">
-                <td className="p-2">{role.name}</td>
-                <td className="p-2">{role.description}</td>
-                <td className="p-2 flex gap-2">
-                  <Link to={`/roles/edit/${role.id}`} className="text-blue-600">
-                    <Edit />
-                  </Link>
-                  <button onClick={() => handleDelete(role.id)} className="text-red-600">
-                    <Trash />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+    <div className="p-4 max-w-lg mx-auto">
+      <Title text="Crear Nuevo Rol" />
+      <FormikProvider value={formik}>
+        <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <div>
+            <label>Nombre</label>
+            <input
+              name="name"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+              className="w-full border px-3 py-2 rounded"
+            />
+            {formik.touched.name && formik.errors.name && (
+              <p className="text-red-500 text-sm">{formik.errors.name}</p>
+            )}
+          </div>
+          <div>
+            <label>Descripción</label>
+            <input
+              name="description"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.description}
+              className="w-full border px-3 py-2 rounded"
+            />
+            {formik.touched.description && formik.errors.description && (
+              <p className="text-red-500 text-sm">{formik.errors.description}</p>
+            )}
+          </div>
+          <button
+            type="submit"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Crear Rol
+          </button>
+        </form>
+      </FormikProvider>
     </div>
   );
 };

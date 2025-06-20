@@ -40,6 +40,7 @@ export const Navbar = () => {
                             <NavLink to="/" active={isActive("/")} text="Inicio" icon={<Home size={18} />} />
                             <NavLink to="/countries" active={isActive("/countries")} text="Países" icon={<Globe size={18} />} />
                             <NavLink to="/persons" active={isActive("/persons")} text="Personas" icon={<Users size={18} />} />
+                            <NavLink to="/roles" icon={<Menu />} label="Roles" />
                         </div>
                         {/* Botón de menu móvil */}
                         <div className="md:hidden flex items-center">
@@ -62,6 +63,7 @@ export const Navbar = () => {
                             <MobileNavLink to="/" active={isActive("/")} icon={<Home size={18} />} text="Inicio" />
                             <MobileNavLink to="/countries" active={isActive("/countries")} icon={<Globe size={18} />} text="Países" />
                             <MobileNavLink to="/persons" active={isActive("/persons")} icon={<Users size={18} />} text="Personas" />
+                            <MobileNavLink to="/roles" label="Roles" />
                         </div>
                     </div>
                 )}

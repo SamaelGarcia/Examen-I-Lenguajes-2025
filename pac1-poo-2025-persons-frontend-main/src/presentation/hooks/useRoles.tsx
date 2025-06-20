@@ -1,5 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getRoles, getRoleById, createRole, updateRole, deleteRole } from "../services/roles.service";
+import { getPaginationRoles } from "../core/actions/roles/get-pagination-roles.action";
+import { getOneRole } from "../core/actions/roles/get-one-role.action";
+import { createRole } from "../core/actions/roles/create-role.action";
+import { updateRole } from "../core/actions/roles/edit-role.action";
+import { deleteRole } from "../core/actions/roles/delete-role.action";
+import { RoleResponse } from "../infrastructure/interfaces/role.response";
 import { RoleDto, RoleFormDto } from "../types/role.types";
 
 export const useRoles = () => {
